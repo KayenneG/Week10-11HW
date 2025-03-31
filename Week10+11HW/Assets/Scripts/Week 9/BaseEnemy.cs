@@ -7,6 +7,7 @@ public class BaseEnemy : MonoBehaviour
     public float health = 100f;
     public float speed = 3f;
     public float attackDamage = 0f;
+    public float attackRange;
 
     private float timer = 0f;
 
@@ -23,12 +24,14 @@ public class BaseEnemy : MonoBehaviour
     // Update is called once per frame
     protected virtual void Update()
     {
-        timer += Time.deltaTime;
-
-        if(timer >= attackInterval)
+        if(Vector3.Distance(this.transform.position, player.transform.position) < attackRange)
         {
-            Attack();
-            timer = 0f;
+            timer += Time.deltaTime;
+            if(timer >= attackInterval)
+            {
+                Attack();
+                timer = 0f;
+            }
         }
     }
 

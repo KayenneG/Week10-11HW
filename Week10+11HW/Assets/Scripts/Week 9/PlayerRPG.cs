@@ -14,6 +14,10 @@ public class PlayerRPG : MonoBehaviour
 
     public Image attackReadyImage;
 
+    public GameObject projectilePrefab;
+    public Transform projectileSpawnPoint;
+    public float projectileForce = 1000f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -52,6 +56,12 @@ public class PlayerRPG : MonoBehaviour
                     }
                 }
             }
+        }
+
+        if(Input.GetMouseButtonDown(1))
+        {
+            GameObject go = Instantiate(projectilePrefab, projectileSpawnPoint.position, projectileSpawnPoint.rotation);
+            go.GetComponent<Rigidbody>().AddForce(go.transform.forward * projectileForce);
         }
     }
 
