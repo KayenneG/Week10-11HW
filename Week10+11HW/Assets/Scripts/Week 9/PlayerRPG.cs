@@ -6,8 +6,8 @@ using UnityEngine.UI;
 
 public class PlayerRPG : MonoBehaviour
 {
-    public float attackDamage = 5f;
-    float damageModifier;
+    public int attackDamage = 5;
+    int damageModifier;
     public float attackInterval = 1f;
     private float timer;
     private bool isAttackReady = true;

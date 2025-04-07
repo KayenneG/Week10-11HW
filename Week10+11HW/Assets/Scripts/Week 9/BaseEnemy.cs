@@ -5,28 +5,36 @@ using UnityEngine;
 
 public class BaseEnemy : MonoBehaviour
 {
-    public float health = 100f;
-    public float speed = 3f;
+    public int health;
     public int attackDamage;
+    public int attackRange;
+
+    public int attackSpeed;
+
+    private float attackTimer;
+
+    protected PlayerRPG player;
+    
+    //add all the nav mesh stuff here
+
+
+    //this is where my own damage nonsense begins
     public int damageModMin;
     public int damageModMax;
     public int damageTotal;
-    public float attackRange;
 
     public AudioSource attackSound;
     public AudioSource damageSound;
     public AudioSource deathSound;
 
-    private float timer = 0f;
 
-    [SerializeField] protected float attackInterval = 1f;
 
-    private PlayerRPG player;
+    
 
     // Start is called before the first frame update
     protected virtual void Start()
     {
-        player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerRPG>();
+        player = FindAnyObjectByType<PlayerRPG>();
     }
 
     // Update is called once per frame
@@ -34,11 +42,11 @@ public class BaseEnemy : MonoBehaviour
     {
         if(Vector3.Distance(this.transform.position, player.transform.position) < attackRange)
         {
-            timer += Time.deltaTime;
-            if(timer >= attackInterval)
+            attackTimer += Time.deltaTime;
+            if(attackTimer >= attackSpeed)
             {
                 Attack();
-                timer = 0f;
+                attackTimer = 0f;
             }
         }
     }
@@ -68,12 +76,7 @@ public class BaseEnemy : MonoBehaviour
         //attackSound.Play();
     }
 
-    public virtual void Move()
-    {
-        
-    }
-
-    public virtual void TakeDamage(float damage)
+    public virtual void TakeDamage(int damage)
     {
         health -= damage;
         //damageSound.Play();
