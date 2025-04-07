@@ -1,30 +1,35 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class PlayerRPG : MonoBehaviour
 {
-    public float health = 100f;
     public float attackDamage = 5f;
+    float damageModifier;
     public float attackInterval = 1f;
-
     private float timer;
     private bool isAttackReady = true;
 
-    public Image attackReadyImage;
-
     public GameObject projectilePrefab;
     public Transform projectileSpawnPoint;
-    public float projectileForce = 1000f;
+    public float projectileForce = 1500f;
+    public bool hasAmmo = true;
 
-    // Start is called before the first frame update
+    public TextMeshProUGUI healthCounter;
+    public TextMeshProUGUI ammoCounter;
+    public Image attackReadyImage;
+
+    public int ammoNumb = 20;
+    public int ammoCap = 20;
+    public float playerHealth = 100;
+
     void Start()
     {
         
     }
 
-    // Update is called once per frame
     void Update()
     {
         if(isAttackReady == false)
@@ -38,7 +43,6 @@ public class PlayerRPG : MonoBehaviour
                 timer = 0f;
             }
         }
-        
 
         if(Input.GetMouseButtonDown(0))
         {
@@ -60,24 +64,78 @@ public class PlayerRPG : MonoBehaviour
 
         if(Input.GetMouseButtonDown(1))
         {
-            GameObject go = Instantiate(projectilePrefab, projectileSpawnPoint.position, projectileSpawnPoint.rotation);
-            go.GetComponent<Rigidbody>().AddForce(go.transform.forward * projectileForce);
+            ammoNumb--;
+
+            if (ammoNumb <= 0)
+            {
+                ammoNumb = 0;
+                hasAmmo = false;
+            }
+
+            UiUpdate();
+
+            if(hasAmmo)
+            {
+                GameObject go = Instantiate(projectilePrefab, projectileSpawnPoint.position, projectileSpawnPoint.rotation);
+                go.GetComponent<Rigidbody>().AddForce(go.transform.forward * projectileForce);
+            }
+        }
+
+        if(Input.GetKey(KeyCode.R))
+        {
+            ammoNumb = ammoCap;
+            hasAmmo = true;
+            UiUpdate();
         }
     }
 
+    void UiUpdate()
+    { 
+        ammoCounter.text = ammoNumb.ToString() + "/" + ammoCap;
+        healthCounter.text = playerHealth.ToString();
+    }
+
+    //all of this has to be moved to other parent/child power up scripts
+    public void HealthBoost()
+    {
+        Debug.Log("Health Boost");
+        playerHealth += 50;
+        UiUpdate();
+    }
+
+    public void AmmoBoost()
+    {
+        Debug.Log("ammo boost");
+        ammoCap += 5;
+        UiUpdate();
+    }
+
+    public void DamageBoost()
+    {
+        Debug.Log("Damage Boost");
+        attackDamage += 5;
+    }
+
+
     public void Attack(BaseEnemy enemy)
     {
-        enemy.TakeDamage(attackDamage);
+        damageModifier = Random.Range(0, 4);
+        Debug.Log("Player Damage mod: " + damageModifier);
+        enemy.TakeDamage(attackDamage + damageModifier);
+        Debug.Log("Player Damage Total: " + attackDamage + damageModifier);
         isAttackReady = false;
         attackReadyImage.gameObject.SetActive(isAttackReady);
     }
 
     public void TakeDamage(float damage)
     {
-        health -= damage;
+        playerHealth -= damage;
+        Debug.Log("Player health: " + playerHealth);
+        UiUpdate();
 
-        if (health <= 0)
+        if (playerHealth <= 0)
         {
+            //player death screen + restart button
             Debug.Log("YOU DIED");
         }
     }

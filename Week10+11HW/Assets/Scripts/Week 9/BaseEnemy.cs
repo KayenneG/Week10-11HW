@@ -1,13 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class BaseEnemy : MonoBehaviour
 {
     public float health = 100f;
     public float speed = 3f;
-    public float attackDamage = 0f;
+    public int attackDamage;
+    public int damageModMin;
+    public int damageModMax;
+    public int damageTotal;
     public float attackRange;
+
+    public AudioSource attackSound;
+    public AudioSource damageSound;
+    public AudioSource deathSound;
 
     private float timer = 0f;
 
@@ -35,9 +43,29 @@ public class BaseEnemy : MonoBehaviour
         }
     }
 
-    protected virtual void Attack()
+    private void OnCollisionEnter(Collision collision)
     {
-        player.TakeDamage(attackDamage);
+        if (collision.gameObject.CompareTag("Ball"))
+        {
+            health -= 2;
+            //damageSound.Play();
+            Debug.Log("2 Damage");
+            Destroy(collision.gameObject);
+
+            if (health <= 0f)
+            {
+                Destroy(this.gameObject);
+                //deathSound.Play();
+            }
+        }
+    }
+
+    public virtual void Attack()
+    {
+        int damageModifier = Random.Range(damageModMin, damageModMax);
+        damageTotal = attackDamage + damageModifier;
+        player.TakeDamage(attackDamage + damageModifier);
+        //attackSound.Play();
     }
 
     public virtual void Move()
@@ -48,8 +76,9 @@ public class BaseEnemy : MonoBehaviour
     public virtual void TakeDamage(float damage)
     {
         health -= damage;
+        //damageSound.Play();
 
-        if(health <= 0f)
+        if (health <= 0f)
         {
             Destroy(this.gameObject);
         }
