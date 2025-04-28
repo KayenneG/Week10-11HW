@@ -6,11 +6,15 @@ using UnityEngine.UI;
 
 public class PlayerRPG : MonoBehaviour
 {
-    public int attackDamage = 5;
+    public float health = 100;
+
+    public int attackDamage = 3;
     int damageModifier;
     public float attackInterval = 1f;
     private float timer;
     private bool isAttackReady = true;
+
+    public bool isOnFloor;
 
     public GameObject projectilePrefab;
     public Transform projectileSpawnPoint;
@@ -19,15 +23,30 @@ public class PlayerRPG : MonoBehaviour
 
     public TextMeshProUGUI healthCounter;
     public TextMeshProUGUI ammoCounter;
+    public TextMeshProUGUI reloadCounter;
     public Image attackReadyImage;
+    public Image damageVin;
 
+    //you still have to add these in
+    public AudioSource attack1Sound;
+    public AudioSource attack2Sound;
+    public AudioSource damageSound;
+    public AudioSource deathSound;
+
+    public Animation ouch;
+
+    public int reloadNumb = 1;
     public int ammoNumb = 20;
-    public int ammoCap = 20;
-    public float playerHealth = 100;
+    private int ammoCap = 20;
+
+    Coroutine projectile;
+
+    public GameObject deathScreen;
+
 
     void Start()
     {
-        
+        UiUpdate();
     }
 
     void Update()
@@ -48,10 +67,12 @@ public class PlayerRPG : MonoBehaviour
         {
             if(isAttackReady == true)
             {
+                
                 RaycastHit hit;
 
                 if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 3f))
                 {
+                    attack1Sound.Play();
                     BaseEnemy enemy = hit.collider.GetComponent<BaseEnemy>();
 
                     if (enemy != null)
@@ -64,79 +85,148 @@ public class PlayerRPG : MonoBehaviour
 
         if(Input.GetMouseButtonDown(1))
         {
-            ammoNumb--;
-
-            if (ammoNumb <= 0)
+            if (ammoNumb >= 1)
             {
-                ammoNumb = 0;
-                hasAmmo = false;
-            }
+                attack2Sound.Play();
+                ammoNumb--;
 
-            UiUpdate();
-
-            if(hasAmmo)
-            {
-                GameObject go = Instantiate(projectilePrefab, projectileSpawnPoint.position, projectileSpawnPoint.rotation);
-                go.GetComponent<Rigidbody>().AddForce(go.transform.forward * projectileForce);
+                projectile = StartCoroutine(Fire());
             }
         }
 
-        if(Input.GetKey(KeyCode.R))
+        if(Input.GetKeyDown(KeyCode.R))
         {
-            ammoNumb = ammoCap;
-            hasAmmo = true;
-            UiUpdate();
+            if(reloadNumb >= 1)
+            {
+                reloadNumb--;
+                ammoNumb = ammoCap;
+
+                UiUpdate();
+
+                
+            }
+            if(reloadNumb <= 0)
+            {
+                reloadNumb = 0;
+            }
         }
+    }
+
+    IEnumerator Fire()
+    {
+        GameObject go = Instantiate(projectilePrefab, projectileSpawnPoint.position, projectileSpawnPoint.rotation);
+
+        go.GetComponent<Rigidbody>().AddForce(go.transform.forward * projectileForce);
+        //play atk sound
+        UiUpdate();
+
+        yield return new WaitForSeconds(2f);
+
+        Destroy(go);
+
+        yield return null;
     }
 
     void UiUpdate()
     { 
         ammoCounter.text = ammoNumb.ToString() + "/" + ammoCap;
-        healthCounter.text = playerHealth.ToString();
+        healthCounter.text = health.ToString();
+        reloadCounter.text = reloadNumb.ToString();
     }
 
-    //all of this has to be moved to other parent/child power up scripts
     public void HealthBoost()
     {
         Debug.Log("Health Boost");
-        playerHealth += 50;
+        health += 50;
         UiUpdate();
     }
 
     public void AmmoBoost()
     {
         Debug.Log("ammo boost");
-        ammoCap += 5;
+        reloadNumb += 1;
         UiUpdate();
     }
 
     public void DamageBoost()
     {
         Debug.Log("Damage Boost");
-        attackDamage += 5;
+        ammoCap += 5;
+        UiUpdate();
     }
 
 
     public void Attack(BaseEnemy enemy)
     {
         damageModifier = Random.Range(0, 4);
-        Debug.Log("Player Damage mod: " + damageModifier);
         enemy.TakeDamage(attackDamage + damageModifier);
-        Debug.Log("Player Damage Total: " + attackDamage + damageModifier);
+        Debug.Log("Player does " + (attackDamage + damageModifier) + " damage to " + enemy.gameObject);
         isAttackReady = false;
         attackReadyImage.gameObject.SetActive(isAttackReady);
     }
 
     public void TakeDamage(float damage)
     {
-        playerHealth -= damage;
-        Debug.Log("Player health: " + playerHealth);
+        health -= damage;
+        ouch.Play("DamageVinFade");
+        damageSound.Play();
+        Debug.Log("Player health: " + health);
         UiUpdate();
 
-        if (playerHealth <= 0)
+        if (health <= 0)
         {
-            //player death screen + restart button
-            Debug.Log("YOU DIED");
+            Die();
         }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "VisionCone")
+        {
+            other.GetComponentInParent<BaseEnemy>().SeePlayer();
+        }
+
+        
+    }
+
+    private void OnCollisionEnter(Collision other)
+    {
+        if (other.gameObject.CompareTag("PainBall"))
+        {
+            health -= 5;
+            ouch.Play("DamageVinFade");
+            damageSound.Play();
+            Debug.Log("player takes 5 Damage");
+            Destroy(other.gameObject);
+            UiUpdate();
+
+            if (health <= 0)
+            {
+                Die();
+            }
+        }
+
+        if (other.gameObject.CompareTag("Floor"))
+        {
+            isOnFloor = true;
+            attackDamage = 3;
+        }
+    }
+
+    private void OnCollisionExit(Collision other)
+    {
+        if (other.gameObject.CompareTag("Floor"))
+        {
+            isOnFloor = false;
+            attackDamage = 5;
+        }
+    }
+
+    public void Die()
+    {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        deathScreen.SetActive(true);
+        deathSound.Play();
     }
 }

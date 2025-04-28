@@ -7,18 +7,21 @@ public class SlimeEnemy : BaseEnemy
 
     protected override void Start()
     {
-        base.Start();
+        player = FindAnyObjectByType<PlayerRPG>();
     }
 
     protected override void Update()
     {
-        base.Update();
+        if (Vector3.Distance(this.transform.position, player.transform.position) < attackRange)
+        {
+            Hit();
+        }
+            
     }
 
-    public override void Attack()
+    protected override void Hit()
     {
-        base.Attack();
-        Debug.Log(this.gameObject.name + " deals " + damageTotal + " damage");
+        base.Hit();
     }
 
     public override void TakeDamage(int damage)

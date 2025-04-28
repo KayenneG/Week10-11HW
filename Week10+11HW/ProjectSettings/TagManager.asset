@@ -9,6 +9,10 @@ TagManager:
   - AmmoCap
   - Health
   - Damage
+  - VisionCone
+  - PainBall
+  - Floor
+  - Shroom
   layers:
   - Default
   - TransparentFX
