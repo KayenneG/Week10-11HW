@@ -50,6 +50,7 @@ public class BaseEnemy : MonoBehaviour
     protected virtual void Start()
     {
         player = FindAnyObjectByType<PlayerRPG>();
+        enemyManager = FindAnyObjectByType<EnemyManager>();
         navAgent = GetComponent<NavMeshAgent>();
         navAgent.SetDestination(patrolPoints[patrolPointIndex].position);
     }
@@ -175,7 +176,21 @@ public class BaseEnemy : MonoBehaviour
 
         if (health <= 0)
         {
-            enemyManager.Chase();
+            if(this.gameObject.tag == "Chase")
+            {
+                enemyManager.Chase();
+            }
+            if (this.gameObject.tag == "Range")
+            {
+                enemyManager.Range();
+            }
+            if (this.gameObject.tag == "Shroom")
+            {
+                Debug.Log("Shroom Destroy Call1");
+                enemyManager. Mushroom();
+                Debug.Log("Shroom Destroy Call2");
+            }
+
             Destroy(this.gameObject);
         }
     }
@@ -191,6 +206,7 @@ public class BaseEnemy : MonoBehaviour
             }
             else
             {
+                hasSeenPlayer = true;
                 TakeDamage(5);
             }
         }

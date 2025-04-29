@@ -23,6 +23,11 @@ public class RangedEnemy : BaseEnemy
         base.Update();
     }
 
+    public override void TakeDamage(int damage)
+    {
+        base.TakeDamage(damage);
+    }
+
     IEnumerator Fire()
     {
         GameObject go = Instantiate(projectilePrefab, projectileSpawnPosition.position, projectileSpawnPosition.rotation);

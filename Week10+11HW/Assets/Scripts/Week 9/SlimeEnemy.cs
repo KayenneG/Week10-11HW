@@ -8,6 +8,7 @@ public class SlimeEnemy : BaseEnemy
     protected override void Start()
     {
         player = FindAnyObjectByType<PlayerRPG>();
+        enemyManager = FindAnyObjectByType<EnemyManager>();
     }
 
     protected override void Update()

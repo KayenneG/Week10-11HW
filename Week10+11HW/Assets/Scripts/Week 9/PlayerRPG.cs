@@ -32,9 +32,6 @@ public class PlayerRPG : MonoBehaviour
     Coroutine ouch;
 
     public Image tabList;
-    public GameObject weindigo;
-    public GameObject feind;
-    public GameObject growth;
     Coroutine goOut;
     
     public GameObject deathScreen;
@@ -150,6 +147,10 @@ public class PlayerRPG : MonoBehaviour
     public void Attack(BaseEnemy enemy)
     {
         damageModifier = Random.Range(0, 4);
+        if(isOnFloor == false)
+        {
+            damageModifier += 3;
+        }    
         enemy.TakeDamage(attackDamage + damageModifier);
         Debug.Log("Player does " + (attackDamage + damageModifier) + " damage to " + enemy.gameObject);
         isAttackReady = false;
@@ -251,8 +252,7 @@ public class PlayerRPG : MonoBehaviour
     {
         if (other.gameObject.CompareTag("PainBall"))
         {
-            health -= 5;
-            Damage();
+            TakeDamage(5f);
 
             if (health <= 0)
             {
@@ -262,7 +262,6 @@ public class PlayerRPG : MonoBehaviour
         if (other.gameObject.CompareTag("Floor"))
         {
             isOnFloor = true;
-            attackDamage = 5;
         }
     }
     private void OnCollisionExit(Collision other)
@@ -270,7 +269,6 @@ public class PlayerRPG : MonoBehaviour
         if (other.gameObject.CompareTag("Floor"))
         {
             isOnFloor = false;
-            attackDamage = 3;
         }
     }
 
@@ -280,18 +278,5 @@ public class PlayerRPG : MonoBehaviour
         Cursor.visible = true;
         deathScreen.SetActive(true);
         deathSound.Play();
-    }
-
-    public void SlimeGone()
-    {
-        growth.SetActive(true);
-    }
-    public void FeindGone()
-    {
-        feind.SetActive(true);
-    }
-    public void WeindigoGone()
-    {
-        weindigo.SetActive(true);
     }
 }

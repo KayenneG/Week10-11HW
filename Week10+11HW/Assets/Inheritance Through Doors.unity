@@ -865,7 +865,7 @@ GameObject:
   - component: {fileID: 84536830}
   m_Layer: 0
   m_Name: Cube
-  m_TagString: Untagged
+  m_TagString: Range
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6165,7 +6165,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66b1156c64ef5964d8ef37f0bfff1c28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 20
+  health: 10
   attackDamage: 1
   attackRange: 5
   attackSpeed: 1
@@ -6773,7 +6773,7 @@ GameObject:
   - component: {fileID: 195013214}
   m_Layer: 0
   m_Name: Chase
-  m_TagString: Untagged
+  m_TagString: Chase
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -11833,7 +11833,7 @@ GameObject:
   - component: {fileID: 261252275}
   m_Layer: 0
   m_Name: Cube
-  m_TagString: Untagged
+  m_TagString: Range
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -12399,7 +12399,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66b1156c64ef5964d8ef37f0bfff1c28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 20
+  health: 10
   attackDamage: 1
   attackRange: 5
   attackSpeed: 1
@@ -12860,7 +12860,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66b1156c64ef5964d8ef37f0bfff1c28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 20
+  health: 10
   attackDamage: 1
   attackRange: 5
   attackSpeed: 1
@@ -13122,7 +13122,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66b1156c64ef5964d8ef37f0bfff1c28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 20
+  health: 10
   attackDamage: 1
   attackRange: 5
   attackSpeed: 1
@@ -19051,7 +19051,7 @@ GameObject:
   - component: {fileID: 558966477}
   m_Layer: 0
   m_Name: Chase
-  m_TagString: Untagged
+  m_TagString: Chase
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -31201,7 +31201,7 @@ GameObject:
   - component: {fileID: 1064349603}
   m_Layer: 0
   m_Name: Cube
-  m_TagString: Untagged
+  m_TagString: Range
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -46519,9 +46519,6 @@ MonoBehaviour:
   damVinParent: {fileID: 1866127620}
   damageVin: {fileID: 1495490263039767229, guid: 90f0f6444a17b7845bf15be3dccd854f, type: 3}
   tabList: {fileID: 1153759728}
-  weindigo: {fileID: 899058630}
-  feind: {fileID: 1979533755}
-  growth: {fileID: 794964186}
   deathScreen: {fileID: 92703003}
   projectilePrefab: {fileID: 2098952312281755011, guid: 5f24517a5ed2cfc4d96c784c98347d32, type: 3}
   projectileSpawnPoint: {fileID: 154070427}
@@ -52024,7 +52021,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66b1156c64ef5964d8ef37f0bfff1c28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 20
+  health: 10
   attackDamage: 1
   attackRange: 5
   attackSpeed: 1
@@ -66660,7 +66657,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66b1156c64ef5964d8ef37f0bfff1c28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 20
+  health: 10
   attackDamage: 1
   attackRange: 5
   attackSpeed: 1
@@ -77705,6 +77702,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fd37d5e1ed65c5459e5c3293028c07b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  weindigo: {fileID: 899058630}
+  feind: {fileID: 1979533755}
+  growth: {fileID: 794964186}
 --- !u!1 &2043283893
 GameObject:
   m_ObjectHideFlags: 0
@@ -77777,7 +77777,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66b1156c64ef5964d8ef37f0bfff1c28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 20
+  health: 10
   attackDamage: 1
   attackRange: 5
   attackSpeed: 1
@@ -78053,7 +78053,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66b1156c64ef5964d8ef37f0bfff1c28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 20
+  health: 10
   attackDamage: 1
   attackRange: 5
   attackSpeed: 1
@@ -79735,7 +79735,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66b1156c64ef5964d8ef37f0bfff1c28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 20
+  health: 10
   attackDamage: 1
   attackRange: 5
   attackSpeed: 1
