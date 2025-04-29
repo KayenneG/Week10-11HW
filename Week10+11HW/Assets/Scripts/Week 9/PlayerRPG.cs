@@ -1,48 +1,62 @@
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class PlayerRPG : MonoBehaviour
 {
+    //PLAYER STATS
     public float health = 100;
-
     public int attackDamage = 3;
     int damageModifier;
+    public int reloadNumb = 1;
+    public int ammoNumb = 20;
+    private int ammoCap = 20;
     public float attackInterval = 1f;
-    private float timer;
-    private bool isAttackReady = true;
-
-    public bool isOnFloor;
-
-    public GameObject projectilePrefab;
-    public Transform projectileSpawnPoint;
-    public float projectileForce = 1500f;
     public bool hasAmmo = true;
+    private float attackTimer;
+    private bool isAttackReady = true;
+    bool isOnFloor;
 
+
+
+
+    //UI
     public TextMeshProUGUI healthCounter;
     public TextMeshProUGUI ammoCounter;
     public TextMeshProUGUI reloadCounter;
     public Image attackReadyImage;
-    public Image damageVin;
+    
+    public GameObject damVinParent;
+    public GameObject damageVin;
+    Coroutine ouch;
+
+    public Image tabList;
+    public GameObject weindigo;
+    public GameObject feind;
+    public GameObject growth;
+    Coroutine goOut;
+    
+    public GameObject deathScreen;
+
+
+
+
+    //ptojrctile variables
+    public GameObject projectilePrefab;
+    public Transform projectileSpawnPoint;
+    public float projectileForce = 1500f;
+    Coroutine projectile;
+
+    
+
 
     //you still have to add these in
     public AudioSource attack1Sound;
     public AudioSource attack2Sound;
-    public AudioSource damageSound;
     public AudioSource deathSound;
 
-    public Animation ouch;
-
-    public int reloadNumb = 1;
-    public int ammoNumb = 20;
-    private int ammoCap = 20;
-
-    Coroutine projectile;
-
-    public GameObject deathScreen;
-
+    
 
     void Start()
     {
@@ -51,25 +65,25 @@ public class PlayerRPG : MonoBehaviour
 
     void Update()
     {
-        if(isAttackReady == false)
+        //ATTACK TIMER
+        if (isAttackReady == false)
         {
-            timer += Time.deltaTime;
+            attackTimer += Time.deltaTime;
 
-            if (timer >= attackInterval)
+            if (attackTimer >= attackInterval)
             {
                 isAttackReady = true;
                 attackReadyImage.gameObject.SetActive(isAttackReady);
-                timer = 0f;
+                attackTimer = 0f;
             }
         }
 
-        if(Input.GetMouseButtonDown(0))
+        //MELE ATTACK CHECK
+        if (Input.GetMouseButtonDown(0))
         {
-            if(isAttackReady == true)
+            if (isAttackReady == true)
             {
-                
                 RaycastHit hit;
-
                 if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 3f))
                 {
                     attack1Sound.Play();
@@ -83,7 +97,7 @@ public class PlayerRPG : MonoBehaviour
             }
         }
 
-        if(Input.GetMouseButtonDown(1))
+        if (Input.GetMouseButtonDown(1))
         {
             if (ammoNumb >= 1)
             {
@@ -94,22 +108,65 @@ public class PlayerRPG : MonoBehaviour
             }
         }
 
-        if(Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKey(KeyCode.Tab))
         {
-            if(reloadNumb >= 1)
+            //StopCoroutine(goOut);
+
+            //Debug.Log("TabPressed");
+            if (tabList.rectTransform.anchoredPosition.x < 0f)
+            {
+                tabList.rectTransform.anchoredPosition += Vector2.right * 10000 * Time.deltaTime;
+                //Debug.Log("movin'");
+            }
+            if (tabList.rectTransform.anchoredPosition.x > 0f)
+            {
+                tabList.rectTransform.anchoredPosition = new Vector2(0, 0);
+            }
+        }
+        if (Input.GetKeyUp(KeyCode.Tab))
+        {
+            goOut = StartCoroutine(OutHeGoes());
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            if (reloadNumb >= 1)
             {
                 reloadNumb--;
                 ammoNumb = ammoCap;
 
                 UiUpdate();
 
-                
+
             }
-            if(reloadNumb <= 0)
+            if (reloadNumb <= 0)
             {
                 reloadNumb = 0;
             }
         }
+    }
+
+    //ATTACK (uses raycast script reference from MELE ATTACK CHECK)
+    public void Attack(BaseEnemy enemy)
+    {
+        damageModifier = Random.Range(0, 4);
+        enemy.TakeDamage(attackDamage + damageModifier);
+        Debug.Log("Player does " + (attackDamage + damageModifier) + " damage to " + enemy.gameObject);
+        isAttackReady = false;
+        attackReadyImage.gameObject.SetActive(isAttackReady);
+    }
+
+    IEnumerator OutHeGoes()
+    {
+        while(tabList.rectTransform.anchoredPosition.x > -541f)
+        {
+            tabList.rectTransform.anchoredPosition += Vector2.left * 10000 * Time.deltaTime;
+            yield return null;
+        }
+        /*if (tabList.rectTransform.anchoredPosition.x < -541f)
+        {
+            tabList.rectTransform.anchoredPosition = new Vector2(-541, 0);
+        }*/
     }
 
     IEnumerator Fire()
@@ -156,27 +213,28 @@ public class PlayerRPG : MonoBehaviour
     }
 
 
-    public void Attack(BaseEnemy enemy)
-    {
-        damageModifier = Random.Range(0, 4);
-        enemy.TakeDamage(attackDamage + damageModifier);
-        Debug.Log("Player does " + (attackDamage + damageModifier) + " damage to " + enemy.gameObject);
-        isAttackReady = false;
-        attackReadyImage.gameObject.SetActive(isAttackReady);
-    }
+    
 
     public void TakeDamage(float damage)
     {
         health -= damage;
-        ouch.Play("DamageVinFade");
-        damageSound.Play();
-        Debug.Log("Player health: " + health);
-        UiUpdate();
+        ouch = StartCoroutine(Damage());
 
         if (health <= 0)
         {
             Die();
         }
+    }
+
+    IEnumerator Damage()
+    {
+        GameObject vin = Instantiate(damageVin, damVinParent.transform);
+        Debug.Log("Player health: " + health);
+        UiUpdate();
+
+        yield return new WaitForSeconds(1f);
+
+        Destroy(vin);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -194,31 +252,25 @@ public class PlayerRPG : MonoBehaviour
         if (other.gameObject.CompareTag("PainBall"))
         {
             health -= 5;
-            ouch.Play("DamageVinFade");
-            damageSound.Play();
-            Debug.Log("player takes 5 Damage");
-            Destroy(other.gameObject);
-            UiUpdate();
+            Damage();
 
             if (health <= 0)
             {
                 Die();
             }
         }
-
         if (other.gameObject.CompareTag("Floor"))
         {
             isOnFloor = true;
-            attackDamage = 3;
+            attackDamage = 5;
         }
     }
-
     private void OnCollisionExit(Collision other)
     {
         if (other.gameObject.CompareTag("Floor"))
         {
             isOnFloor = false;
-            attackDamage = 5;
+            attackDamage = 3;
         }
     }
 
@@ -228,5 +280,18 @@ public class PlayerRPG : MonoBehaviour
         Cursor.visible = true;
         deathScreen.SetActive(true);
         deathSound.Play();
+    }
+
+    public void SlimeGone()
+    {
+        growth.SetActive(true);
+    }
+    public void FeindGone()
+    {
+        feind.SetActive(true);
+    }
+    public void WeindigoGone()
+    {
+        weindigo.SetActive(true);
     }
 }

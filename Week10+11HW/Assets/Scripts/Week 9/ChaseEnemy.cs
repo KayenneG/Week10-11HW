@@ -5,10 +5,7 @@ using UnityEngine;
 public class ChaseEnemy : BaseEnemy
 {
     // Start is called before the first frame update
-    void Start()
-    {
-        base.Start();
-    }
+
 
     protected override void Update()
     {

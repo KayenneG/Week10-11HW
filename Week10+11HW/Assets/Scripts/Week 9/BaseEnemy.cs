@@ -6,7 +6,7 @@ using UnityEngine.AI;
 
 public class BaseEnemy : MonoBehaviour
 {
-    //basc attack variables
+    //basic attack variables
     public int health;
     public int attackDamage;
     public int attackRange;
@@ -16,8 +16,9 @@ public class BaseEnemy : MonoBehaviour
     protected float attackTimer;
 
     protected PlayerRPG player;
+    protected EnemyManager enemyManager;
 
-    //All the nave nonsense!!
+    //All the nav nonsense
     protected NavMeshAgent navAgent;
 
     [SerializeField]
@@ -39,6 +40,10 @@ public class BaseEnemy : MonoBehaviour
 
     public AudioSource fail;
 
+    //more stuff
+    public int rngEnm = 3;
+    public int chsEnm = 2;
+    public int slmEnm = 9;
 
 
 
@@ -51,9 +56,11 @@ public class BaseEnemy : MonoBehaviour
 
     protected virtual void Update()
     {
-        if (hasSeenPlayer == true)//if it has seen the player
+        //If enemy has seen the player
+        if (hasSeenPlayer == true)
         {
-            if (navAgent.remainingDistance < 0.5f)//it reaches its destination
+            //and it is close enough to the player
+            if (navAgent.remainingDistance < 0.5f)
             {
                 if (Vector3.Distance(this.transform.position, player.transform.position) > aggroRange)//if the distane between the enemy and player is not wihin the aggro range
                 {
@@ -112,6 +119,7 @@ public class BaseEnemy : MonoBehaviour
         }
     }
 
+    //LINE OF SIGHT CHECK
     protected bool IsPlayerInLOS()
     {
         RaycastHit hit;
@@ -135,6 +143,42 @@ public class BaseEnemy : MonoBehaviour
         }
         return false;
     }
+    
+    //HIT CHECK
+    protected virtual void Hit()
+    {
+        attackTimer += Time.deltaTime;
+
+        if (attackTimer > attackSpeed)
+        {
+            Attack();
+            attackTimer = 0;
+        }
+    }
+    
+    //ATTACK
+    protected virtual void Attack()
+    {
+        int damageModifier = Random.Range(damageModMin, damageModMax);
+        int damageTotal = attackDamage + damageModifier;
+        player.TakeDamage(attackDamage + damageModifier);
+        Debug.Log(this.gameObject.name + " deals " + damageTotal + " damage");
+        //attackSound.Play();
+    }
+    
+    //TAKE DAMAGE (int is either from on colision enter void call, or player ATTACK (attackDamage + damageModifier)
+    public virtual void TakeDamage(int damage)
+    {
+        health -= damage;
+        damageSound.Play();
+        Debug.Log(this.gameObject.name + " takes " + damage);
+
+        if (health <= 0)
+        {
+            enemyManager.Chase();
+            Destroy(this.gameObject);
+        }
+    }
 
 
     private void OnCollisionEnter(Collision collision)
@@ -147,59 +191,15 @@ public class BaseEnemy : MonoBehaviour
             }
             else
             {
-                hasSeenPlayer = true;
-                health -= 5;
-                damageSound.Play();
-                Debug.Log(this.gameObject.name + " takes 5 Damage");
-                Destroy(collision.gameObject);
-
-                if (health <= 0f)
-                {
-                    Destroy(this.gameObject);
-                    //deathSound.Play();
-                }
-
+                TakeDamage(5);
             }
-            
         }
     }
 
-    protected virtual void ball()
-    {
 
-    }
+    
 
-    protected virtual void Attack()
-    {
-        int damageModifier = Random.Range(damageModMin, damageModMax);
-        int damageTotal = attackDamage + damageModifier;
-        player.TakeDamage(attackDamage + damageModifier);
-        Debug.Log(this.gameObject.name + " deals " + damageTotal + " damage");
-        //attackSound.Play();
-    }
-
-    protected virtual void Hit()
-    {
-        attackTimer += Time.deltaTime;//increase attack timer
-
-        if (attackTimer > attackSpeed)//if the attack timer is greateer than the attack speed
-        {
-            Attack();//attack
-            attackTimer = 0;//reset the timer to 0
-        }
-    }
-
-    public virtual void TakeDamage(int damage)
-    {
-        health -= damage;
-        damageSound.Play();
-        Debug.Log("pain sound)");
-
-        if (health <= 0f)
-        {
-            Destroy(this.gameObject);
-        }
-    }
+   
 
     public void SeePlayer()
     {
