@@ -4,5 +4,9 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Inheritance Through Doors.unity
+    guid: 567d479e51c57804f98ccee3d63b398b
   m_configObjects: {}
+  m_UseUCBPForAssetBundles: 0

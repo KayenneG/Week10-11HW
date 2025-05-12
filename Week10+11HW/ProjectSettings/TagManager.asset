@@ -15,6 +15,7 @@ TagManager:
   - Shroom
   - Chase
   - Range
+  - Win
   layers:
   - Default
   - TransparentFX

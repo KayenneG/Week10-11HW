@@ -1,6 +1,4 @@
 using DG.Tweening;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SlidingDoor : Door
@@ -40,12 +38,12 @@ public class SlidingDoor : Door
 
         if(isDoorOpen == false)
         {
-            this.transform.DOMoveX(this.transform.position.x + 5f, doorOpenInterval);
+            this.transform.DOMoveX(this.transform.position.x + 3f, doorOpenInterval);
 
         }
         else
         {
-            this.transform.DOMoveX(this.transform.position.x - 5f, doorOpenInterval);
+            this.transform.DOMoveX(this.transform.position.x - 3f, doorOpenInterval);
         }
     }
 

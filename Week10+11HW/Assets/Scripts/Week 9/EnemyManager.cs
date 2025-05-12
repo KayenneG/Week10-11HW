@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyManager : MonoBehaviour
@@ -7,11 +5,21 @@ public class EnemyManager : MonoBehaviour
     public GameObject weindigo;
     public GameObject feind;
     public GameObject growth;
+    public GameObject done;
+    public GameObject win;
 
     int rngEnm = 3;
     int chsEnm = 2;
     int slmEnm = 9;
 
+    private void Update()
+    {
+        if(weindigo.activeInHierarchy & feind.activeInHierarchy & growth.activeInHierarchy)
+        {
+            done.SetActive(true);
+            win.SetActive(true);
+        }
+    }
     public void Chase()
     {
         chsEnm -=1;

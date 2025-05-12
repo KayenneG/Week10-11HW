@@ -1,7 +1,5 @@
 using System.Collections;
 using TMPro;
-using UnityEditor.Rendering;
-using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -37,6 +35,8 @@ public class PlayerRPG : MonoBehaviour
     public Image sprintBar;
     public Image knifeBar;
     public Image boltBar;
+    public GameObject tab;
+    public GameObject e;
 
     public GameObject damVinParent;
     public GameObject damageVin;
@@ -67,6 +67,7 @@ public class PlayerRPG : MonoBehaviour
     public AudioSource attack2Sound;
     public AudioSource deathSound;
 
+    public GameObject win;
     
 
     void Start()
@@ -141,8 +142,11 @@ public class PlayerRPG : MonoBehaviour
         }
         #endregion
 
+
         if (Input.GetKey(KeyCode.Tab))
         {
+
+            tab.SetActive(false);
             //StopCoroutine(goOut);
 
             //Debug.Log("TabPressed");
@@ -158,6 +162,7 @@ public class PlayerRPG : MonoBehaviour
         }
         if (Input.GetKeyUp(KeyCode.Tab))
         {
+            tab.SetActive(true);
             goOut = StartCoroutine(OutHeGoes());
         }
 
@@ -321,9 +326,6 @@ public class PlayerRPG : MonoBehaviour
         UiUpdate();
     }
 
-
-    
-
     public void TakeDamage(float damage)
     {
         health -= damage;
@@ -353,8 +355,12 @@ public class PlayerRPG : MonoBehaviour
         {
             other.GetComponentInParent<BaseEnemy>().SeePlayer();
         }
-
-        
+        if (other.tag == "Win")
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            win.SetActive(true);
+        }
     }
 
     private void OnCollisionEnter(Collision other)

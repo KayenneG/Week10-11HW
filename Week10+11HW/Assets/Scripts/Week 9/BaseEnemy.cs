@@ -45,6 +45,8 @@ public class BaseEnemy : MonoBehaviour
     public int chsEnm = 2;
     public int slmEnm = 9;
 
+    public GameObject powerUp;
+
 
 
     protected virtual void Start()
@@ -191,6 +193,7 @@ public class BaseEnemy : MonoBehaviour
                 Debug.Log("Shroom Destroy Call2");
             }
 
+            GameObject go = Instantiate(powerUp, this.transform.position, this.transform.rotation);
             Destroy(this.gameObject);
         }
     }
